@@ -1,6 +1,6 @@
 {
   "name": "financial-indicator",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "description": "",
   "scripts": {
     "rmdir": "node -e \"var fs = require('fs');process.argv.slice(1).map((fpath)=>{ try {fs.rmdirSync(fpath,{recursive: true})} catch(e){console.warn('Error folder:', fpath, e)}});process.exit(0);\"",
@@ -26,11 +26,10 @@
   "license": "ISC",
   "private": false,
   "homepage": "https://github.com/DoTranMinhChu/financial-indicator",
-  "dependencies": {
-    "@types/node": "^20.13.0",
-    "assert": "^2.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^20.13.0",
+    "assert": "^2.1.0",
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.6",
     "chai": "^5.1.1",

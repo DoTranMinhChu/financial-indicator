@@ -2,9 +2,9 @@ import assert from "assert";
 import { EMA } from "../../dist";
 import { data } from "../data";
 
-var prices = data.close;
-var period = 9;
-var expectedOutput = [
+const prices = data.close;
+const period = 9;
+const expectedOutput = [
   138.3, 140.5, 144.9, 151.7, 161.4, 173.5, 187.5, 198.7, 216.2, 229,
 ];
 
@@ -18,7 +18,7 @@ describe("EMA (Exponential Moving Average)", function () {
   });
 
   it("should be able to get EMA from the get results", function () {
-    var emaProducer = new EMA({ period: period, values: prices });
+    const emaProducer = new EMA({ period: period, values: prices });
     assert.deepEqual(
       emaProducer.getResult(),
       expectedOutput,
@@ -27,10 +27,10 @@ describe("EMA (Exponential Moving Average)", function () {
   });
 
   it("should be able to get EMA for the next bar using nextValue", function () {
-    var emaProducer = new EMA({ period: period, values: [] });
-    var results: number[] = [];
+    const emaProducer = new EMA({ period: period, values: [] });
+    const results: number[] = [];
     prices.forEach((price) => {
-      var result = emaProducer.nextValue(price);
+      const result = emaProducer.nextValue(price);
       if (result) results.push(result);
     });
     assert.deepEqual(

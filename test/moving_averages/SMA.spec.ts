@@ -2,11 +2,11 @@ import assert from "assert";
 import { SMA } from "../../dist";
 import { data } from "../data";
 
-var prices = data.close;
+const prices = data.close;
 
-var period = 10;
+const period = 10;
 
-var expectResult = [
+const expectResult = [
   139.4, 142.9, 147.9, 154.7, 162.3, 171.7, 182.3, 196.2, 210.4,
 ];
 
@@ -17,7 +17,7 @@ describe("SMA (Simple Moving Average)", function () {
   });
 
   it("should be able to calculate EMA by using getResult", function () {
-    var smaProducer = new SMA({ period: period, values: prices });
+    const smaProducer = new SMA({ period: period, values: prices });
     assert.deepEqual(
       smaProducer.getResult(),
       expectResult,
@@ -26,10 +26,10 @@ describe("SMA (Simple Moving Average)", function () {
   });
 
   it("should be able to get SMA for the next bar using nextValue", function () {
-    var smaProducer = new SMA({ period: period, values: [] });
-    var results: Array<number> = [];
+    const smaProducer = new SMA({ period: period, values: [] });
+    const results: Array<number> = [];
     prices.forEach((price) => {
-      var result = smaProducer.nextValue(price);
+      const result = smaProducer.nextValue(price);
       if (result) results.push(result);
     });
     assert.deepEqual(
