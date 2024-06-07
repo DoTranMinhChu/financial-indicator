@@ -6,21 +6,56 @@ const prices = data.close;
 
 const period = 10;
 
-const expectResult = [
-  139.4, 142.9, 147.9, 154.7, 162.3, 171.7, 182.3, 196.2, 210.4,
+const expectedOutput = [
+  { value: undefined, timestamp: 1028173500 },
+  { value: undefined, timestamp: 1030938300 },
+  { value: undefined, timestamp: 1033443900 },
+  { value: undefined, timestamp: 1036122300 },
+  { value: undefined, timestamp: 1038800700 },
+  { value: undefined, timestamp: 1041392700 },
+  { value: undefined, timestamp: 1044243900 },
+  { value: undefined, timestamp: 1046663100 },
+  { value: undefined, timestamp: 1049168700 },
+  { value: 139.4, timestamp: 1051760700 },
+  { value: 142.9, timestamp: 1054525500 },
+  { value: 147.9, timestamp: 1057031100 },
+  { value: 154.7, timestamp: 1059709500 },
+  { value: 162.3, timestamp: 1062387900 },
+  { value: 171.7, timestamp: 1064979900 },
+  { value: 182.3, timestamp: 1067831100 },
+  { value: 196.2, timestamp: 1070250300 },
+  { value: 210.4, timestamp: 1072928700 },
 ];
+const expectedSMAOutput = expectedOutput
+  .map((item) => item.value)
+  .filter((value) => value != undefined);
 
 describe("SMA (Simple Moving Average)", function () {
   it("should calculate SMA using the calculate method", function () {
     const result = SMA.calculate({ period: period, values: prices });
-    assert.deepEqual(result, expectResult, "Wrong Results");
+    assert.deepEqual(result, expectedSMAOutput, "Wrong Results");
   });
 
+  it(`should calculate SMA ${period} for candlestick using the calculate method`, function () {
+    const smaData = SMA.calculate({
+      period,
+      values: data.candlesticks.map((item) => item.close),
+    });
+
+    const candlestickResult = data.candlesticks.map((item, index) => {
+      return {
+        value: index + 1 < period ? undefined : smaData[index + 1 - period],
+        timestamp: item.timestamp,
+      };
+    });
+    assert.deepEqual(candlestickResult, expectedOutput, "Wrong Results");
+  });
+  
   it("should be able to calculate EMA by using getResult", function () {
     const smaProducer = new SMA({ period: period, values: prices });
     assert.deepEqual(
       smaProducer.getResult(),
-      expectResult,
+      expectedSMAOutput,
       "Wrong Results while calculating next bar"
     );
   });
@@ -34,7 +69,7 @@ describe("SMA (Simple Moving Average)", function () {
     });
     assert.deepEqual(
       results,
-      expectResult,
+      expectedSMAOutput,
       "Wrong Results while getting results"
     );
   });

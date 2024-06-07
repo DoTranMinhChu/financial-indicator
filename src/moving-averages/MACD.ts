@@ -3,8 +3,8 @@ import { EMA } from "./EMA";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
 export class MACDInput extends BaseIndicatorInput {
-  SimpleMAOscillator: boolean = true;
-  SimpleMASignal: boolean = true;
+  simpleMAOscillator: boolean = true;
+  simpleMASignal: boolean = true;
   fastPeriod: number;
   slowPeriod: number;
   signalPeriod: number;
@@ -24,8 +24,8 @@ export class MACD extends BaseIndicator {
   generator: Generator<MACDOutput, never, number>;
   constructor(input: MACDInput) {
     super(input);
-    var oscillatorMAtype = input.SimpleMAOscillator ? SMA : EMA;
-    var signalMAtype = input.SimpleMASignal ? SMA : EMA;
+    var oscillatorMAtype = input.simpleMAOscillator ? SMA : EMA;
+    var signalMAtype = input.simpleMASignal ? SMA : EMA;
     var fastMAProducer = new oscillatorMAtype({
       period: input.fastPeriod,
       values: [],

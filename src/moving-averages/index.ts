@@ -3,3 +3,4 @@ export * from "./MACD";
 export * from "./EMA";
 export * from "./WEMA";
 export * from "./WMA";
+export * from "./WilderSmoothing";
