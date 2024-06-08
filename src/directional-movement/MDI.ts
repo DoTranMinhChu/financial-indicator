@@ -1,20 +1,20 @@
 import { CandleData } from "../StockData";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
-import { WilderSmoothing } from "../moving-averages";
-import { PDM, PDMNext } from "./PDM";
+import { WilderSmoothing, WEMA } from "../moving-averages";
+import { MDM, MDMNext } from "./MDM";
 import { TrueRange } from "./TrueRange";
 
-export class PDIInput extends BaseIndicatorInput {
+export class MDIInput extends BaseIndicatorInput {
   high: number[];
   low: number[];
   close: number[];
   period: number;
 }
 
-export class PDI extends BaseIndicator {
+export class MDI extends BaseIndicator {
   result: number[];
   generator: Generator<number, never, CandleData>;
-  constructor(input: PDIInput) {
+  constructor(input: MDIInput) {
     super(input);
     var lows = input.low;
     var highs = input.high;
@@ -22,12 +22,12 @@ export class PDI extends BaseIndicator {
     var period = input.period;
     var format = this.format;
 
-    var plusDM = new PDM({
+    var minusDM = new MDM({
       high: [],
       low: [],
     });
 
-    var emaPDM = new WilderSmoothing({
+    var emaMDM = new WilderSmoothing({
       period: period,
       values: [],
       format: (v) => {
@@ -35,6 +35,13 @@ export class PDI extends BaseIndicator {
       },
     });
     var emaTR = new WilderSmoothing({
+      period: period,
+      values: [],
+      format: (v) => {
+        return v;
+      },
+    });
+    var emMDI = new WEMA({
       period: period,
       values: [],
       format: (v) => {
@@ -55,32 +62,29 @@ export class PDI extends BaseIndicator {
     this.result = [];
 
     this.generator = (function* (): Generator<number, never, CandleData> {
-      var tick = yield;
-      var lastPDI;
-      while (true) {
-        const calcTr = tr.nextValue(tick);
-        const calcPDM = plusDM.nextValue(tick as PDMNext);
+      let tick = yield;
+      let lastMDI;
 
-        if (calcTr === undefined || calcPDM === undefined) {
+      while (true) {
+        let calcTr = tr.nextValue(tick);
+        let calcMDM = minusDM.nextValue(tick as MDMNext);
+        if (calcTr === undefined) {
           tick = yield;
           continue;
         }
-
-        const lastATR = emaTR.nextValue(calcTr);
-        const lastAPDM = emaPDM.nextValue(calcPDM);
-
-        if (lastATR != undefined && lastAPDM != undefined) {
-          lastPDI = (lastAPDM * 100) / lastATR;
+        let lastATR = emaTR.nextValue(calcTr);
+        let lastAMDM = emaMDM.nextValue(calcMDM);
+        if (lastATR != undefined && lastAMDM != undefined) {
+          lastMDI = (lastAMDM * 100) / lastATR;
         }
-
-        tick = yield lastPDI;
+        tick = yield lastMDI;
       }
     })();
 
     this.generator.next();
 
     lows.forEach((tick, index) => {
-      var result = this.generator.next({
+      const result = this.generator.next({
         high: highs[index],
         low: lows[index],
         close: closes[index],
@@ -91,16 +95,17 @@ export class PDI extends BaseIndicator {
     });
   }
 
-  static calculate = pdi;
+  static calculate = mdi;
 
   nextValue(price: CandleData): number | undefined {
     let result = this.generator.next(price).value;
     return result;
   }
 }
-export function pdi(input: PDIInput): number[] {
+
+export function mdi(input: MDIInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new PDI(input).result;
+  var result = new MDI(input).result;
   if (input.reversedInput) {
     result.reverse();
   }
