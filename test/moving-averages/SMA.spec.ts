@@ -50,7 +50,7 @@ describe("SMA (Simple Moving Average)", function () {
     });
     assert.deepEqual(candlestickResult, expectedOutput, "Wrong Results");
   });
-  
+
   it("should be able to calculate EMA by using getResult", function () {
     const smaProducer = new SMA({ period: period, values: prices });
     assert.deepEqual(
