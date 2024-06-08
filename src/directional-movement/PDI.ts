@@ -94,13 +94,13 @@ export class PDI extends BaseIndicator {
   static calculate = pdi;
 
   nextValue(price: CandleData): number | undefined {
-    let result = this.generator.next(price).value;
-    return result;
+    const result = this.generator.next(price).value;
+    if (result != undefined) return this.format(result);
   }
 }
 export function pdi(input: PDIInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new PDI(input).result;
+  const result = new PDI(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

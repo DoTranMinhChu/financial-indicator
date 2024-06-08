@@ -31,4 +31,22 @@ describe("PDI (Exponential Moving Average)", function () {
       "Wrong pdiResult while getting results"
     );
   });
+  it("should be able to get PDI for the next bar using nextValue", function () {
+    const pdiProducer = new PDI({
+      period: period,
+      close: [],
+      high: [],
+      low: [],
+    });
+    const results: number[] = [];
+    data.candlesticks.forEach((price) => {
+      const result = pdiProducer.nextValue(price);
+      if (result) results.push(result);
+    });
+    assert.deepEqual(
+      results,
+      expectedOutput,
+      "Wrong Results while getting results"
+    );
+  });
 });

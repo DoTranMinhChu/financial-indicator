@@ -31,4 +31,23 @@ describe("MDI (Exponential Moving Average)", function () {
       "Wrong MDI while getting results"
     );
   });
+
+  it("should be able to get MDI for the next bar using nextValue", function () {
+    const mdiProducer = new MDI({
+      period: period,
+      close: [],
+      high: [],
+      low: [],
+    });
+    const results: number[] = [];
+    data.candlesticks.forEach((price) => {
+      const result = mdiProducer.nextValue(price);
+      if (result) results.push(result);
+    });
+    assert.deepEqual(
+      results,
+      expectedOutput,
+      "Wrong Results while getting results"
+    );
+  });
 });

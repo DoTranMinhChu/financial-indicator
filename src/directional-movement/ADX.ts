@@ -1,117 +1,86 @@
 import { CandleData } from "../StockData";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
-import { WilderSmoothing, WEMA } from "../moving-averages";
-import { MDM, MDMNext } from "./MDM";
-import { PDM, PDMNext } from "./PDM";
+import { WEMA } from "../moving-averages";
+import { MDI } from "./MDI";
+import { PDI } from "./PDI";
 import { TrueRange } from "./TrueRange";
 
 export class ADXInput extends BaseIndicatorInput {
   high: number[];
   low: number[];
   close: number[];
-  period: number;
-}
-
-export class ADXOutput extends BaseIndicatorInput {
-  adx: number;
-  pdi: number;
-  mdi: number;
+  adxPeriod: number;
+  diPeriod: number;
 }
 
 export class ADX extends BaseIndicator {
-  result: ADXOutput[];
-  generator: Generator<ADXOutput, never, CandleData>;
+  result: number[];
+  generator: Generator<number, never, CandleData>;
   constructor(input: ADXInput) {
     super(input);
-    var lows = input.low;
-    var highs = input.high;
-    var closes = input.close;
-    var period = input.period;
+    const lows = input.low;
+    const highs = input.high;
+    const closes = input.close;
+    const adxPeriod = input.adxPeriod;
+    const diPeriod = input.diPeriod;
     var format = this.format;
-
-    var plusDM = new PDM({
+    const plusDI = new PDI({
+      period: diPeriod,
+      close: [],
+      high: [],
+      low: [],
+    });
+    const minusDI = new MDI({
+      period: diPeriod,
+      close: [],
       high: [],
       low: [],
     });
 
-    var minusDM = new MDM({
-      high: [],
-      low: [],
+    const emaDX = new WEMA({
+      period: adxPeriod,
+      values: [],
     });
 
-    var emaPDM = new WilderSmoothing({
-      period: period,
-      values: [],
-      format: (v) => {
-        return v;
-      },
-    });
-    var emaMDM = new WilderSmoothing({
-      period: period,
-      values: [],
-      format: (v) => {
-        return v;
-      },
-    });
-    var emaTR = new WilderSmoothing({
-      period: period,
-      values: [],
-      format: (v) => {
-        return v;
-      },
-    });
-    var emaDX = new WEMA({
-      period: period,
-      values: [],
-      format: (v) => {
-        return v;
-      },
-    });
-
-    var tr = new TrueRange({
+    const tr = new TrueRange({
       low: [],
       high: [],
       close: [],
     });
 
     if (!(lows.length === highs.length && highs.length === closes.length)) {
-      throw "Inputs(low,high, close) not of equal size";
+      throw "Inputs (low, high, close) not of equal size";
     }
 
     this.result = [];
-    ADXOutput;
-    this.generator = (function* (): Generator<ADXOutput, never, CandleData> {
+
+    this.generator = (function* (): Generator<number, never, CandleData> {
       var tick = yield;
-      var index = 0;
-      var lastATR, lastAPDM, lastAMDM, lastPDI, lastMDI, lastDX, smoothedDX;
-      lastATR = 0;
-      lastAPDM = 0;
-      lastAMDM = 0;
+
       while (true) {
         let calcTr = tr.nextValue(tick);
-        let calcPDM = plusDM.nextValue(tick as PDMNext);
-        let calcMDM = minusDM.nextValue(tick as MDMNext);
+        let calcPDI = plusDI.nextValue(tick);
+        let calcMDI = minusDI.nextValue(tick);
         if (calcTr === undefined) {
           tick = yield;
           continue;
         }
-        let lastATR = emaTR.nextValue(calcTr);
-        let lastAPDM = emaPDM.nextValue(calcPDM);
-        let lastAMDM = emaMDM.nextValue(calcMDM);
-        if (
-          lastATR != undefined &&
-          lastAPDM != undefined &&
-          lastAMDM != undefined
-        ) {
-          lastPDI = (lastAPDM * 100) / lastATR;
-          lastMDI = (lastAMDM * 100) / lastATR;
-          let diDiff = Math.abs(lastPDI - lastMDI);
-          let diSum = lastPDI + lastMDI;
-          lastDX = (diDiff / diSum) * 100;
-          smoothedDX = emaDX.nextValue(lastDX);
-          // console.log(tick.high.toFixed(2), tick.low.toFixed(2), tick.close.toFixed(2) , calcTr.toFixed(2), calcPDM.toFixed(2), calcMDM.toFixed(2), lastATR.toFixed(2), lastAPDM.toFixed(2), lastAMDM.toFixed(2), lastPDI.toFixed(2), lastMDI.toFixed(2), diDiff.toFixed(2), diSum.toFixed(2), lastDX.toFixed(2));
+
+        if (calcPDI !== undefined && calcMDI !== undefined) {
+          const diDiff = Math.abs(calcPDI - calcMDI);
+          const diSum = Math.abs(calcPDI + calcMDI);
+          const lastDX = (diDiff / diSum) * 100;
+
+          const smoothedDX = emaDX.nextValue(lastDX);
+          if (lastDX !== undefined) {
+            const adx = lastDX;
+            tick = yield adx;
+          } else {
+            tick = yield;
+          }
+        } else {
+          tick = yield;
         }
-        tick = yield { adx: smoothedDX, pdi: lastPDI, mdi: lastMDI };
       }
     })();
 
@@ -123,31 +92,22 @@ export class ADX extends BaseIndicator {
         low: lows[index],
         close: closes[index],
       });
-      if (result.value != undefined && result.value.adx != undefined) {
-        this.result.push({
-          adx: format(result.value.adx),
-          pdi: format(result.value.pdi),
-          mdi: format(result.value.mdi),
-        });
+
+      if (result.value !== undefined) {
+        this.result.push(format(result.value));
       }
     });
   }
 
   static calculate = adx;
 
-  nextValue(price: CandleData): ADXOutput | undefined {
-    let result = this.generator.next(price).value;
-    if (result != undefined && result.adx != undefined) {
-      return {
-        adx: this.format(result.adx),
-        pdi: this.format(result.pdi),
-        mdi: this.format(result.mdi),
-      };
-    }
+  nextValue(price: CandleData): number | undefined {
+    const result = this.generator.next(price).value;
+    if (result != undefined) return this.format(result);
   }
 }
 
-export function adx(input: ADXInput): ADXOutput[] {
+export function adx(input: ADXInput): number[] {
   BaseIndicator.reverseInputs(input);
   var result = new ADX(input).result;
   if (input.reversedInput) {

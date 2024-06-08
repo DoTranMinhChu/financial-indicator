@@ -98,8 +98,8 @@ export class MDI extends BaseIndicator {
   static calculate = mdi;
 
   nextValue(price: CandleData): number | undefined {
-    let result = this.generator.next(price).value;
-    return result;
+    const result = this.generator.next(price).value;
+    if (result != undefined) return this.format(result);
   }
 }
 
