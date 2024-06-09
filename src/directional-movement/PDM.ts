@@ -10,7 +10,7 @@ export class PDMNext {
 }
 export class PDM extends BaseIndicator {
   result: number[];
-  generator: Generator<number, number, PDMNext>;
+  generator: Generator<number | undefined, number | undefined, PDMNext>;
   constructor(input: PDMInput) {
     super(input);
     var lows = input.low;

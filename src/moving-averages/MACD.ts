@@ -21,39 +21,43 @@ export class MACDOutput {
 
 export class MACD extends BaseIndicator {
   result: MACDOutput[];
-  generator: Generator<MACDOutput, never, number>;
+  generator: Generator<MACDOutput | undefined, MACDOutput | undefined, number>;
   constructor(input: MACDInput) {
     super(input);
-    var oscillatorMAtype = input.simpleMAOscillator ? SMA : EMA;
-    var signalMAtype = input.simpleMASignal ? SMA : EMA;
-    var fastMAProducer = new oscillatorMAtype({
+    const oscillatorMAtype = input.simpleMAOscillator ? SMA : EMA;
+    const signalMAtype = input.simpleMASignal ? SMA : EMA;
+    const fastMAProducer = new oscillatorMAtype({
       period: input.fastPeriod,
       values: [],
       format: (v) => {
         return v;
       },
     });
-    var slowMAProducer = new oscillatorMAtype({
+    const slowMAProducer = new oscillatorMAtype({
       period: input.slowPeriod,
       values: [],
       format: (v) => {
         return v;
       },
     });
-    var signalMAProducer = new signalMAtype({
+    const signalMAProducer = new signalMAtype({
       period: input.signalPeriod,
       values: [],
       format: (v) => {
         return v;
       },
     });
-    var format = this.format;
+    const format = this.format;
     this.result = [];
 
-    this.generator = (function* () {
-      var index = 0;
-      var tick;
-      var MACD: number | undefined,
+    this.generator = (function* (): Generator<
+      MACDOutput | undefined,
+      MACDOutput | undefined,
+      number
+    > {
+      let index = 0;
+      let tick;
+      let MACD: number | undefined,
         signal: number | undefined,
         histogram: number | undefined,
         fast: number | undefined,
@@ -71,13 +75,17 @@ export class MACD extends BaseIndicator {
           MACD = fast - slow;
           signal = signalMAProducer.nextValue(MACD);
         }
-        histogram = MACD - signal;
+        if (MACD && signal) histogram = MACD - signal;
         tick = yield {
           //fast : fast,
           //slow : slow,
-          MACD: format(MACD),
+          MACD: MACD ? format(MACD) : undefined,
           signal: signal ? format(signal) : undefined,
-          histogram: isNaN(histogram) ? undefined : format(histogram),
+          histogram: histogram
+            ? isNaN(histogram)
+              ? undefined
+              : format(histogram)
+            : undefined,
         };
         fast = fastMAProducer.nextValue(tick);
         slow = slowMAProducer.nextValue(tick);
@@ -87,7 +95,7 @@ export class MACD extends BaseIndicator {
     this.generator.next();
 
     input.values.forEach((tick) => {
-      var result = this.generator.next(tick);
+      const result = this.generator.next(tick);
       if (result.value != undefined) {
         this.result.push(result.value);
       }
@@ -97,14 +105,14 @@ export class MACD extends BaseIndicator {
   static calculate = macd;
 
   nextValue(price: number): MACDOutput | undefined {
-    var result = this.generator.next(price).value;
+    const result = this.generator.next(price).value;
     return result;
   }
 }
 
 export function macd(input: MACDInput): MACDOutput[] {
   BaseIndicator.reverseInputs(input);
-  var result = new MACD(input).result;
+  const result = new MACD(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

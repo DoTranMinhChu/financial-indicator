@@ -15,7 +15,7 @@ export class ADXInput extends BaseIndicatorInput {
 
 export class ADX extends BaseIndicator {
   result: number[];
-  generator: Generator<number, never, CandleData>;
+  generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: ADXInput) {
     super(input);
     const lows = input.low;
@@ -23,7 +23,7 @@ export class ADX extends BaseIndicator {
     const closes = input.close;
     const adxPeriod = input.adxPeriod;
     const diPeriod = input.diPeriod;
-    var format = this.format;
+    const format = this.format;
     const plusDI = new PDI({
       period: diPeriod,
       close: [],
@@ -54,8 +54,12 @@ export class ADX extends BaseIndicator {
 
     this.result = [];
 
-    this.generator = (function* (): Generator<number, never, CandleData> {
-      var tick = yield;
+    this.generator = (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      CandleData
+    > {
+      let tick = yield;
 
       while (true) {
         let calcTr = tr.nextValue(tick);
@@ -87,7 +91,7 @@ export class ADX extends BaseIndicator {
     this.generator.next();
 
     lows.forEach((tick, index) => {
-      var result = this.generator.next({
+      const result = this.generator.next({
         high: highs[index],
         low: lows[index],
         close: closes[index],
@@ -109,7 +113,7 @@ export class ADX extends BaseIndicator {
 
 export function adx(input: ADXInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new ADX(input).result;
+  const result = new ADX(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

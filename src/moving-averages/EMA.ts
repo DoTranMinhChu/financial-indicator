@@ -5,21 +5,25 @@ export class EMA extends BaseIndicator {
   period: number;
   price: number[];
   result: number[];
-  generator: Generator<number, never, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
-    var period = input.period;
-    var priceArray = input.values;
-    var exponent = 2 / (period + 1);
-    var sma: SMA;
+    const period = input.period;
+    const priceArray = input.values;
+    const exponent = 2 / (period + 1);
+    let sma: SMA;
 
     this.result = [];
 
     sma = new SMA({ period: period, values: [] });
 
-    var genFn = function* (): Generator<number, never, number> {
-      var tick = yield;
-      var prevEma: number;
+    const genFn = function* (): Generator<
+      number | undefined,
+      number | undefined,
+      number
+    > {
+      let tick = yield;
+      let prevEma: number;
       while (true) {
         if (prevEma !== undefined && tick !== undefined) {
           prevEma = (tick - prevEma) * exponent + prevEma;
@@ -38,7 +42,7 @@ export class EMA extends BaseIndicator {
     this.generator.next();
 
     priceArray.forEach((tick) => {
-      var result = this.generator.next(tick);
+      const result = this.generator.next(tick);
       if (result.value != undefined) {
         this.result.push(this.format(result.value));
       }
@@ -48,14 +52,14 @@ export class EMA extends BaseIndicator {
   static calculate = ema;
 
   nextValue(price: number) {
-    var result = this.generator.next(price).value;
+    const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
   }
 }
 
 export function ema(input: MAInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new EMA(input).result;
+  const result = new EMA(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

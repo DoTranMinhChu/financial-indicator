@@ -5,7 +5,7 @@ export class WEMA extends BaseIndicator {
   period: number;
   price: number[];
   result: number[];
-  generator: Generator<number, never, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
     var period = input.period;
@@ -17,7 +17,11 @@ export class WEMA extends BaseIndicator {
 
     sma = new SMA({ period: period, values: [] });
 
-    var genFn = function* (): Generator<number, never, number> {
+    var genFn = function* (): Generator<
+      number | undefined,
+      number | undefined,
+      number
+    > {
       var tick = yield;
       var prevEma: number;
       while (true) {

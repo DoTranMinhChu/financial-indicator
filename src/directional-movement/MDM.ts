@@ -11,7 +11,7 @@ export class MDMNext {
 }
 export class MDM extends BaseIndicator {
   result: number[];
-  generator: Generator<number, number, MDMNext>;
+  generator: Generator<number | undefined, number | undefined, MDMNext>;
   constructor(input: MDMInput) {
     super(input);
     var lows = input.low;

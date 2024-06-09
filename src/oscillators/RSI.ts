@@ -8,7 +8,7 @@ export class RSIInput extends BaseIndicatorInput {
 }
 
 export class RSI extends BaseIndicator {
-  generator: Generator<number, number, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
 
   constructor(input: RSIInput) {
     super(input);
@@ -19,7 +19,9 @@ export class RSI extends BaseIndicator {
     var GainProvider = new AverageGain({ period: period, values: [] });
     var LossProvider = new AverageLoss({ period: period, values: [] });
     let count = 1;
-    this.generator = (function* (period): Generator<number, number, number> {
+    this.generator = (function* (
+      period
+    ): Generator<number | undefined, number | undefined, number> {
       var current = yield;
       var lastAvgGain, lastAvgLoss, RS, currentRSI;
       while (true) {

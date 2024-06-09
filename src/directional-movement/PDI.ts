@@ -13,7 +13,7 @@ export class PDIInput extends BaseIndicatorInput {
 
 export class PDI extends BaseIndicator {
   result: number[];
-  generator: Generator<number, never, CandleData>;
+  generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: PDIInput) {
     super(input);
     var lows = input.low;
@@ -54,7 +54,11 @@ export class PDI extends BaseIndicator {
 
     this.result = [];
 
-    this.generator = (function* (): Generator<number, never, CandleData> {
+    this.generator = (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      CandleData
+    > {
       var tick = yield;
       var lastPDI;
       while (true) {

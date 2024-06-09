@@ -7,12 +7,14 @@ export class WilderSmoothing extends BaseIndicator {
   period: number;
   price: number[];
   result: number[];
-  generator: Generator<number, number, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
     this.period = input.period;
     this.price = input.values;
-    var genFn = function* (period: number): Generator<number, number, number> {
+    var genFn = function* (
+      period: number
+    ): Generator<number | undefined, number | undefined, number> {
       var list = new LinkedList();
       var sum = 0;
       var counter = 1;

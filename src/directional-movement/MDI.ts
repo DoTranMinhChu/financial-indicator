@@ -13,7 +13,7 @@ export class MDIInput extends BaseIndicatorInput {
 
 export class MDI extends BaseIndicator {
   result: number[];
-  generator: Generator<number, never, CandleData>;
+  generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: MDIInput) {
     super(input);
     var lows = input.low;
@@ -61,7 +61,11 @@ export class MDI extends BaseIndicator {
 
     this.result = [];
 
-    this.generator = (function* (): Generator<number, never, CandleData> {
+    this.generator = (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      CandleData
+    > {
       let tick = yield;
       let lastMDI;
 

@@ -6,13 +6,17 @@ export class WMA extends BaseIndicator {
   period: number;
   price: number[];
   result: number[];
-  generator: Generator<number, never, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
     var period = input.period;
     var priceArray = input.values;
     this.result = [];
-    this.generator = (function* () {
+    this.generator = (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      number
+    > {
       let data = new LinkedList();
       let denominator = (period * (period + 1)) / 2;
 

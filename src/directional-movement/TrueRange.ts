@@ -9,7 +9,7 @@ export class TrueRangeInput extends BaseIndicatorInput {
 
 export class TrueRange extends BaseIndicator {
   result: number[];
-  generator: Generator<number, never, CandleData>;
+  generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: TrueRangeInput) {
     super(input);
     var lows = input.low;
@@ -23,7 +23,7 @@ export class TrueRange extends BaseIndicator {
 
     this.result = [];
 
-    this.generator = (function* (): Generator<number, never, CandleData> {
+    this.generator = (function* (): Generator<number, number, CandleData> {
       var current: CandleData = yield;
       var previousClose, result;
       while (true) {

@@ -15,12 +15,14 @@ export class SMA extends BaseIndicator {
   period: number;
   price: number[];
   result: number[];
-  generator: Generator<number, never, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
     this.period = input.period;
     this.price = input.values;
-    const genFn = function* (period: number) {
+    const genFn = function* (
+      period: number
+    ): Generator<number | undefined, number | undefined, number> {
       const list = new LinkedList();
       let sum = 0;
       let counter = 1;
