@@ -83,7 +83,7 @@ export class PDI extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       var result = this.generator.next({
         high: highs[index],
         low: lows[index],

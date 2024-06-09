@@ -14,7 +14,7 @@ export class CrossDown extends BaseIndicator {
   sourceSeries: number[];
   referenceSeries: number[];
   result: boolean[];
-  generator: Generator<boolean, boolean, CrossDownNext>;
+  generator: Generator<boolean | undefined, boolean | undefined, CrossDownNext>;
 
   constructor(input: CrossDownInput) {
     super(input);
@@ -25,7 +25,11 @@ export class CrossDown extends BaseIndicator {
     var sourceValue: Array<number> = [];
     var referenceValue: Array<number> = [];
 
-    const genFn = function* (): Generator<boolean, boolean, CrossDownNext> {
+    const genFn = function* (): Generator<
+      boolean | undefined,
+      boolean | undefined,
+      CrossDownNext
+    > {
       let current = yield;
       let result = false;
       while (true) {

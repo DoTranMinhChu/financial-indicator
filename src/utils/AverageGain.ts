@@ -6,14 +6,16 @@ export class AvgGainInput extends BaseIndicatorInput {
 }
 
 export class AverageGain extends BaseIndicator {
-  generator: Generator<number, number, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: AvgGainInput) {
     super(input);
     let values = input.values;
     let period = input.period;
     let format = this.format;
 
-    this.generator = (function* (period): Generator<number, number, number> {
+    this.generator = (function* (
+      period
+    ): Generator<number | undefined, number | undefined, number> {
       let currentValue = yield;
       let counter = 1;
       let gainSum = 0;

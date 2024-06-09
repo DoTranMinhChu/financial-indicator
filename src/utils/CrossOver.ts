@@ -12,7 +12,7 @@ export class CrossOverNext {
   referenceValue: number;
 }
 export class CrossOver extends BaseIndicator {
-  generator: Generator<boolean, boolean, CrossOverNext>;
+  generator: Generator<boolean | undefined, boolean | undefined, CrossOverNext>;
   result: boolean[];
 
   constructor(input: CrossOverInput) {
@@ -27,7 +27,11 @@ export class CrossOver extends BaseIndicator {
       referenceSeries: input.referenceSeries,
     });
 
-    const genFn = function* (): Generator<boolean, boolean, CrossOverNext> {
+    const genFn = function* (): Generator<
+      boolean | undefined,
+      boolean | undefined,
+      CrossOverNext
+    > {
       var current = yield;
       var result = false;
       var first = true;

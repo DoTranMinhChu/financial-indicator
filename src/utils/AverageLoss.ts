@@ -6,14 +6,16 @@ export class AvgLossInput extends BaseIndicatorInput {
 }
 
 export class AverageLoss extends BaseIndicator {
-  generator: Generator<number, number, number>;
+  generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: AvgLossInput) {
     super(input);
     const values = input.values;
     const period = input.period;
     const format = this.format;
 
-    this.generator = (function* (period): Generator<number, number, number> {
+    this.generator = (function* (
+      period
+    ): Generator<number | undefined, number | undefined, number> {
       let currentValue = yield;
       let counter = 1;
       let lossSum = 0;
