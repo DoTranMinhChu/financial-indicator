@@ -1,6 +1,6 @@
 {
   "name": "financial-indicator",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "",
   "scripts": {
     "rmdir": "node -e \"var fs = require('fs');process.argv.slice(1).map((fpath)=>{ try {fs.rmdirSync(fpath,{recursive: true})} catch(e){console.warn('Error folder:', fpath, e)}});process.exit(0);\"",
