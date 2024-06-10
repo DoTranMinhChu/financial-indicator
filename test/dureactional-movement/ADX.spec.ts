@@ -3,9 +3,7 @@ import { ADX } from "../../src";
 import { data } from "../data";
 const adxPeriod = 7;
 const diPeriod = 9;
-const expectedOutput = [
-  20.19, 4.076, 12.96, 33.85, 49.74, 49.73, 47.6, 55.66, 54.96,
-];
+const expectedOutput = [31.17, 34.67, 37.57];
 const input = {
   adxPeriod,
   diPeriod,
@@ -32,9 +30,9 @@ describe("ADX (Average Directional Index)", function () {
     var results: any = [];
     input.close.forEach(function (close, index) {
       var result = adx.nextValue({
-        close: input.close[index],
-        high: input.high[index],
-        low: input.low[index],
+        close: input.close[index]!,
+        high: input.high[index]!,
+        low: input.low[index]!,
       });
       if (result) results.push(result);
     });

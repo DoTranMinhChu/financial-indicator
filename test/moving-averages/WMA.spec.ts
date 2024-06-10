@@ -1,5 +1,5 @@
 import assert from "assert";
-import { WMA } from "../../dist";
+import { WMA } from "../../src";
 import { data } from "../data";
 
 const prices = data.close;

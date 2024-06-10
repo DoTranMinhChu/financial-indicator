@@ -1,5 +1,5 @@
 import assert from "assert";
-import { SMA } from "../../dist";
+import { SMA } from "../../src";
 import { data } from "../data";
 
 const prices = data.close;

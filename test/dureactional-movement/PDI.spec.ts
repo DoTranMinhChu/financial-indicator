@@ -1,5 +1,5 @@
 import assert from "assert";
-import { PDI } from "../../dist";
+import { PDI } from "../../src";
 import { data } from "../data";
 
 const period = 9;

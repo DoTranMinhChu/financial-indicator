@@ -1,5 +1,5 @@
 import assert from "assert";
-import { CrossOver } from "../../dist";
+import { CrossOver } from "../../src";
 
 const input = {
   sourceSeries: [7, 6, 5, 4, 3, 8, 3, 5, 3, 8, 5, 5, 3, 8, 5, 5, 8, 3],

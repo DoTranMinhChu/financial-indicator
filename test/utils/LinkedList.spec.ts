@@ -1,5 +1,5 @@
 import assert from "assert";
-import { LinkedList } from "../../dist/utils/LinkedList";
+import { LinkedList } from "../../src/utils/LinkedList";
 
 describe("LinkedList", () => {
   let list: LinkedList;

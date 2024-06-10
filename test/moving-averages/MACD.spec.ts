@@ -1,6 +1,6 @@
 import assert from "assert";
 import { data } from "../data";
-import { MACD, MACDOutput } from "../../dist";
+import { MACD, MACDOutput } from "../../src";
 
 const macdInput = {
   values: data.close,

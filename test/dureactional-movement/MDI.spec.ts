@@ -1,5 +1,5 @@
 import assert from "assert";
-import { MDI } from "../../dist";
+import { MDI } from "../../src";
 import { data } from "../data";
 
 const period = 9;

@@ -1,5 +1,5 @@
 import assert from "assert";
-import { WEMA } from "../../dist";
+import { WEMA } from "../../src";
 import { data } from "../data";
 
 const prices = data.close;
