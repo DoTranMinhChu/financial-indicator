@@ -6,15 +6,15 @@ import { PDI } from "./PDI";
 import { TrueRange } from "./TrueRange";
 
 export class ADXInput extends BaseIndicatorInput {
-  high: number[];
-  low: number[];
-  close: number[];
-  adxPeriod: number;
-  diPeriod: number;
+  high: number[] = [];
+  low: number[] = [];
+  close: number[] = [];
+  adxPeriod!: number;
+  diPeriod!: number;
 }
 
 export class ADX extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: ADXInput) {
     super(input);
@@ -76,8 +76,8 @@ export class ADX extends BaseIndicator {
           const lastDX = (diDiff / diSum) * 100;
 
           const smoothedDX = emaDX.nextValue(lastDX);
-          if (lastDX !== undefined) {
-            const adx = lastDX;
+          if (smoothedDX !== undefined) {
+            const adx = smoothedDX;
             tick = yield adx;
           } else {
             tick = yield;
@@ -90,11 +90,11 @@ export class ADX extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       const result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
-        close: closes[index],
+        high: highs[index]!,
+        low: lows[index]!,
+        close: closes[index]!,
       });
 
       if (result.value !== undefined) {
@@ -108,6 +108,7 @@ export class ADX extends BaseIndicator {
   nextValue(price: CandleData): number | undefined {
     const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 

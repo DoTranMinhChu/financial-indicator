@@ -14,7 +14,7 @@ export class MAInput extends BaseIndicatorInput {
 export class SMA extends BaseIndicator {
   period: number;
   price: number[];
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
@@ -56,14 +56,15 @@ export class SMA extends BaseIndicator {
   static calculate = sma;
 
   nextValue(price: number): number | undefined {
-    var result = this.generator.next(price).value;
+    const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 
 export function sma(input: MAInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new SMA(input).result;
+  const result = new SMA(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

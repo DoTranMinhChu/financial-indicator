@@ -8,21 +8,21 @@ export class CrossOverInput extends BaseIndicatorInput {
   }
 }
 export class CrossOverNext {
-  sourceValue: number;
-  referenceValue: number;
+  sourceValue!: number;
+  referenceValue!: number;
 }
 export class CrossOver extends BaseIndicator {
   generator: Generator<boolean | undefined, boolean | undefined, CrossOverNext>;
-  result: boolean[];
+  override result: boolean[];
 
   constructor(input: CrossOverInput) {
     super(input);
 
-    var crossUp = new CrossUp({
+    const crossUp = new CrossUp({
       sourceSeries: input.sourceSeries,
       referenceSeries: input.referenceSeries,
     });
-    var crossDown = new CrossDown({
+    const crossDown = new CrossDown({
       sourceSeries: input.sourceSeries,
       referenceSeries: input.referenceSeries,
     });
@@ -32,16 +32,16 @@ export class CrossOver extends BaseIndicator {
       boolean | undefined,
       CrossOverNext
     > {
-      var current = yield;
-      var result = false;
-      var first = true;
+      let current = yield;
+      let result: boolean | undefined = false;
+      let first: boolean | undefined = true;
 
       while (true) {
-        var nextUp = crossUp.nextValue({
+        const nextUp = crossUp.nextValue({
           sourceValue: current.sourceValue,
           referenceValue: current.referenceValue,
         });
-        var nextDown = crossDown.nextValue({
+        const nextDown = crossDown.nextValue({
           sourceValue: current.sourceValue,
           referenceValue: current.referenceValue,
         });
@@ -57,8 +57,8 @@ export class CrossOver extends BaseIndicator {
     this.generator = genFn();
     this.generator.next();
 
-    var resultA = crossUp.getResult();
-    var resultB = crossDown.getResult();
+    const resultA = crossUp.getResult();
+    const resultB = crossDown.getResult();
 
     this.result = resultA.map((a: any, index: number) => {
       if (index === 0) return false;
@@ -68,21 +68,21 @@ export class CrossOver extends BaseIndicator {
 
   static calculate = crossOver;
 
-  static reverseInputs(input: CrossOverInput): void {
+  static override reverseInputs(input: CrossOverInput): void {
     if (input.reversedInput) {
       input.sourceSeries ? input.sourceSeries.reverse() : undefined;
       input.referenceSeries ? input.referenceSeries.reverse() : undefined;
     }
   }
 
-  nextValue(next: CrossOverNext): boolean {
+  nextValue(next: CrossOverNext): boolean | undefined {
     return this.generator.next(next).value;
   }
 }
 
 export function crossOver(input: CrossOverInput): boolean[] {
   BaseIndicator.reverseInputs(input);
-  var result = new CrossOver(input).result;
+  const result = new CrossOver(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

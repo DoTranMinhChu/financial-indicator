@@ -3,10 +3,10 @@ import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { SMA } from "../moving-averages";
 
 export class AwesomeOscillatorInput extends BaseIndicatorInput {
-  high: number[];
-  low: number[];
-  fastPeriod: number;
-  slowPeriod: number;
+  high: number[] = [];
+  low: number[] = [];
+  fastPeriod!: number;
+  slowPeriod!: number;
 }
 
 export class AwesomeOscillator extends BaseIndicator {
@@ -62,6 +62,7 @@ export class AwesomeOscillator extends BaseIndicator {
     if (result.value != undefined) {
       return this.format(result.value);
     }
+    return undefined;
   }
 }
 

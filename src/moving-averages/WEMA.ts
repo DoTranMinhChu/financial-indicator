@@ -2,9 +2,9 @@ import { BaseIndicator } from "../base-indicator";
 import { MAInput, SMA } from "./SMA";
 
 export class WEMA extends BaseIndicator {
-  period: number;
-  price: number[];
-  result: number[];
+  period!: number;
+  price: number[] = [];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
@@ -23,7 +23,7 @@ export class WEMA extends BaseIndicator {
       number
     > {
       let tick = yield;
-      let prevEma: number;
+      let prevEma: number | undefined = undefined;
       while (true) {
         if (prevEma !== undefined && tick !== undefined) {
           prevEma = (tick - prevEma) * exponent + prevEma;
@@ -54,6 +54,7 @@ export class WEMA extends BaseIndicator {
   nextValue(price: number): number | undefined {
     const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 

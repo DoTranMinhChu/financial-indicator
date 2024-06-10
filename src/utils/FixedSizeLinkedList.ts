@@ -5,7 +5,7 @@ export default class FixedSizeLinkedList extends LinkedList {
   public periodHigh: number = 0;
   public periodLow: number = Infinity;
   public periodSum: number = 0;
-  public lastShift: number;
+  public lastShift!: number;
   public _push: (data: number) => void;
   constructor(
     public size: number,

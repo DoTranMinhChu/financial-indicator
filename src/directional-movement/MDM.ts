@@ -1,16 +1,16 @@
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
 export class MDMInput extends BaseIndicatorInput {
-  low: number[];
-  high: number[];
+  low: number[] = [];
+  high: number[] = [];
 }
 
 export class MDMNext {
-  high: number;
-  low: number;
+  high!: number;
+  low!: number;
 }
 export class MDM extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, MDMNext>;
   constructor(input: MDMInput) {
     super(input);
@@ -39,10 +39,10 @@ export class MDM extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       var result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
+        high: highs[index]!,
+        low: lows[index]!,
       });
       if (result.value !== undefined) this.result.push(result.value);
     });

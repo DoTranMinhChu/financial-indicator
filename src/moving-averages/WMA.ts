@@ -3,14 +3,14 @@ import { LinkedList } from "../utils/LinkedList";
 import { MAInput } from "./SMA";
 
 export class WMA extends BaseIndicator {
-  period: number;
-  price: number[];
-  result: number[];
+  period!: number;
+  price!: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
-    var period = input.period;
-    var priceArray = input.values;
+    const period = input.period;
+    const priceArray = input.values;
     this.result = [];
     this.generator = (function* (): Generator<
       number | undefined,
@@ -29,7 +29,7 @@ export class WMA extends BaseIndicator {
           for (let i = 1; i <= period; i++) {
             result = result + (data.next() * i) / denominator;
           }
-          var next = yield result;
+          const next = yield result;
           data.shift();
           data.push(next);
         }
@@ -38,8 +38,8 @@ export class WMA extends BaseIndicator {
 
     this.generator.next();
 
-    priceArray.forEach((tick, index) => {
-      var result = this.generator.next(tick);
+    priceArray.forEach((tick) => {
+      const result = this.generator.next(tick);
       if (result.value != undefined) {
         this.result.push(this.format(result.value));
       }
@@ -50,14 +50,15 @@ export class WMA extends BaseIndicator {
 
   //STEP 5. REMOVE GET RESULT FUNCTION
   nextValue(price: number): number | undefined {
-    var result = this.generator.next(price).value;
+    const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 
 export function wma(input: MAInput): number[] {
   BaseIndicator.reverseInputs(input);
-  var result = new WMA(input).result;
+  const result = new WMA(input).result;
   if (input.reversedInput) {
     result.reverse();
   }

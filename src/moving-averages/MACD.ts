@@ -5,22 +5,22 @@ import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 export class MACDInput extends BaseIndicatorInput {
   simpleMAOscillator: boolean = true;
   simpleMASignal: boolean = true;
-  fastPeriod: number;
-  slowPeriod: number;
-  signalPeriod: number;
+  fastPeriod!: number;
+  slowPeriod!: number;
+  signalPeriod!: number;
   constructor(public values: number[]) {
     super();
   }
 }
 
 export class MACDOutput {
-  MACD?: number;
-  signal?: number;
-  histogram?: number;
+  MACD?: number | undefined;
+  signal?: number | undefined;
+  histogram?: number | undefined;
 }
 
 export class MACD extends BaseIndicator {
-  result: MACDOutput[];
+  override result: MACDOutput[];
   generator: Generator<MACDOutput | undefined, MACDOutput | undefined, number>;
   constructor(input: MACDInput) {
     super(input);
@@ -77,8 +77,6 @@ export class MACD extends BaseIndicator {
         }
         if (MACD && signal) histogram = MACD - signal;
         tick = yield {
-          //fast : fast,
-          //slow : slow,
           MACD: MACD ? format(MACD) : undefined,
           signal: signal ? format(signal) : undefined,
           histogram: histogram

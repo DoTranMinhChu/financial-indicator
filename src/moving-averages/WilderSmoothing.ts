@@ -1,12 +1,11 @@
 import { BaseIndicator } from "../base-indicator";
-import { LinkedList } from "../utils/LinkedList";
 import { MAInput } from "./SMA";
 
 //STEP3. Add class based syntax with export
 export class WilderSmoothing extends BaseIndicator {
   period: number;
   price: number[];
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: MAInput) {
     super(input);
@@ -15,11 +14,10 @@ export class WilderSmoothing extends BaseIndicator {
     var genFn = function* (
       period: number
     ): Generator<number | undefined, number | undefined, number> {
-      var list = new LinkedList();
-      var sum = 0;
-      var counter = 1;
-      var current = yield;
-      var result = 0;
+      let sum = 0;
+      let counter = 1;
+      let current = yield;
+      let result: number | undefined = undefined;
       while (true) {
         if (counter < period) {
           counter++;
@@ -30,7 +28,9 @@ export class WilderSmoothing extends BaseIndicator {
           current ? (sum = sum + current) : undefined;
           result = sum;
         } else {
-          current ? (result = result - result / period + current) : undefined;
+          current && result != undefined
+            ? (result = result - result / period + current)
+            : undefined;
         }
         current = yield result;
       }
@@ -51,6 +51,7 @@ export class WilderSmoothing extends BaseIndicator {
   nextValue(price: number): number | undefined {
     var result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 

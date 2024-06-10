@@ -2,13 +2,13 @@ import { CandleData } from "../StockData";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
 export class TrueRangeInput extends BaseIndicatorInput {
-  low: number[];
-  high: number[];
-  close: number[];
+  low: number[] = [];
+  high: number[] = [];
+  close: number[] = [];
 }
 
 export class TrueRange extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: TrueRangeInput) {
     super(input);
@@ -23,23 +23,29 @@ export class TrueRange extends BaseIndicator {
 
     this.result = [];
 
-    this.generator = (function* (): Generator<number, number, CandleData> {
+    this.generator = (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      CandleData
+    > {
       var current: CandleData = yield;
-      var previousClose, result;
+      let previousClose, result;
       while (true) {
         if (previousClose === undefined) {
           previousClose = current.close;
           current = yield result;
         }
-        result = Math.max(
-          current.high - current.low,
-          isNaN(Math.abs(current.high - previousClose))
-            ? 0
-            : Math.abs(current.high - previousClose),
-          isNaN(Math.abs(current.low - previousClose))
-            ? 0
-            : Math.abs(current.low - previousClose)
-        );
+        current
+          ? (result = Math.max(
+              current.high! - current.low!,
+              isNaN(Math.abs(current.high! - previousClose!))
+                ? 0
+                : Math.abs(current.high! - previousClose!),
+              isNaN(Math.abs(current.low! - previousClose!))
+                ? 0
+                : Math.abs(current.low! - previousClose!)
+            ))
+          : undefined;
         previousClose = current.close;
         if (result != undefined) {
           result = format(result);
@@ -50,11 +56,11 @@ export class TrueRange extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       var result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
-        close: closes[index],
+        high: highs[index]!,
+        low: lows[index]!,
+        close: closes[index]!,
       });
       if (result.value != undefined) {
         this.result.push(result.value);
@@ -62,14 +68,14 @@ export class TrueRange extends BaseIndicator {
     });
   }
 
-  static calculate = truerange;
+  static calculate = trueRange;
 
   nextValue(price: CandleData): number | undefined {
     return this.generator.next(price).value;
   }
 }
 
-export function truerange(input: TrueRangeInput): number[] {
+export function trueRange(input: TrueRangeInput): number[] {
   BaseIndicator.reverseInputs(input);
   var result = new TrueRange(input).result;
   if (input.reversedInput) {

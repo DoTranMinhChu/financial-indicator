@@ -5,14 +5,14 @@ import { PDM, PDMNext } from "./PDM";
 import { TrueRange } from "./TrueRange";
 
 export class PDIInput extends BaseIndicatorInput {
-  high: number[];
-  low: number[];
-  close: number[];
-  period: number;
+  high: number[] = [];
+  low: number[] = [];
+  close: number[] = [];
+  period!: number;
 }
 
 export class PDI extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: PDIInput) {
     super(input);
@@ -85,9 +85,9 @@ export class PDI extends BaseIndicator {
 
     lows.forEach((_tick, index) => {
       var result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
-        close: closes[index],
+        high: highs[index]!,
+        low: lows[index]!,
+        close: closes[index]!,
       });
       if (result.value != undefined) {
         this.result.push(format(result.value));
@@ -100,6 +100,7 @@ export class PDI extends BaseIndicator {
   nextValue(price: CandleData): number | undefined {
     const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 export function pdi(input: PDIInput): number[] {

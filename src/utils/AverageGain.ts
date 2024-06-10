@@ -1,8 +1,8 @@
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 
 export class AvgGainInput extends BaseIndicatorInput {
-  period: number;
-  values: number[];
+  period!: number;
+  values: number[] = [];
 }
 
 export class AverageGain extends BaseIndicator {
@@ -19,8 +19,8 @@ export class AverageGain extends BaseIndicator {
       let currentValue = yield;
       let counter = 1;
       let gainSum = 0;
-      let avgGain: number;
-      let gain: number;
+      let avgGain: number | undefined;
+      let gain: number | undefined;
       let lastValue = currentValue;
       currentValue = yield;
       while (true) {

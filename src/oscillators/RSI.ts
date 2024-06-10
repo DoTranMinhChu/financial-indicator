@@ -3,8 +3,8 @@ import { AverageGain } from "../utils/AverageGain";
 import { AverageLoss } from "../utils/AverageLoss";
 
 export class RSIInput extends BaseIndicatorInput {
-  period: number;
-  values: number[];
+  period!: number;
+  values: number[] = [];
 }
 
 export class RSI extends BaseIndicator {
@@ -20,7 +20,7 @@ export class RSI extends BaseIndicator {
     var LossProvider = new AverageLoss({ period: period, values: [] });
     let count = 1;
     this.generator = (function* (
-      period
+      _period
     ): Generator<number | undefined, number | undefined, number> {
       var current = yield;
       var lastAvgGain, lastAvgLoss, RS, currentRSI;

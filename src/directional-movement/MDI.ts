@@ -1,18 +1,18 @@
 import { CandleData } from "../StockData";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
-import { WilderSmoothing, WEMA } from "../moving-averages";
+import { WilderSmoothing } from "../moving-averages";
 import { MDM, MDMNext } from "./MDM";
 import { TrueRange } from "./TrueRange";
 
 export class MDIInput extends BaseIndicatorInput {
-  high: number[];
-  low: number[];
-  close: number[];
-  period: number;
+  high: number[] = [];
+  low: number[] = [];
+  close: number[] = [];
+  period!: number;
 }
 
 export class MDI extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: MDIInput) {
     super(input);
@@ -35,13 +35,6 @@ export class MDI extends BaseIndicator {
       },
     });
     var emaTR = new WilderSmoothing({
-      period: period,
-      values: [],
-      format: (v) => {
-        return v;
-      },
-    });
-    var emMDI = new WEMA({
       period: period,
       values: [],
       format: (v) => {
@@ -77,7 +70,7 @@ export class MDI extends BaseIndicator {
           continue;
         }
         let lastATR = emaTR.nextValue(calcTr);
-        let lastAMDM = emaMDM.nextValue(calcMDM);
+        let lastAMDM = emaMDM.nextValue(calcMDM!);
         if (lastATR != undefined && lastAMDM != undefined) {
           lastMDI = (lastAMDM * 100) / lastATR;
         }
@@ -87,11 +80,11 @@ export class MDI extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       const result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
-        close: closes[index],
+        high: highs[index]!,
+        low: lows[index]!,
+        close: closes[index]!,
       });
       if (result.value != undefined) {
         this.result.push(format(result.value));
@@ -104,6 +97,7 @@ export class MDI extends BaseIndicator {
   nextValue(price: CandleData): number | undefined {
     const result = this.generator.next(price).value;
     if (result != undefined) return this.format(result);
+    return undefined;
   }
 }
 

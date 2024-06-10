@@ -1,15 +1,15 @@
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
 export class PDMInput extends BaseIndicatorInput {
-  low: number[];
-  high: number[];
+  low: number[] = [];
+  high: number[] = [];
 }
 export class PDMNext {
-  high: number;
-  low: number;
+  high!: number;
+  low!: number;
 }
 export class PDM extends BaseIndicator {
-  result: number[];
+  override result: number[];
   generator: Generator<number | undefined, number | undefined, PDMNext>;
   constructor(input: PDMInput) {
     super(input);
@@ -40,10 +40,10 @@ export class PDM extends BaseIndicator {
 
     this.generator.next();
 
-    lows.forEach((tick, index) => {
+    lows.forEach((_tick, index) => {
       var result = this.generator.next({
-        high: highs[index],
-        low: lows[index],
+        high: highs[index]!,
+        low: lows[index]!,
       });
       if (result.value !== undefined) this.result.push(result.value);
     });

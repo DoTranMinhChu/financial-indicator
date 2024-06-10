@@ -6,14 +6,14 @@ export class CrossUpInput extends BaseIndicatorInput {
   }
 }
 export class CrossUpNext {
-  sourceValue: number;
-  referenceValue: number;
+  sourceValue!: number;
+  referenceValue!: number;
 }
 
 export class CrossUp extends BaseIndicator {
   sourceSeries: number[];
   referenceSeries: number[];
-  result: boolean[];
+  override result: boolean[];
   generator: Generator<boolean | undefined, boolean | undefined, CrossUpNext>;
 
   constructor(input: CrossUpInput) {
@@ -41,13 +41,13 @@ export class CrossUp extends BaseIndicator {
         let pointer = 1;
         while (
           result === true &&
-          sourceValue[pointer] >= referenceValue[pointer]
+          sourceValue[pointer]! >= referenceValue[pointer]!
         ) {
-          if (sourceValue[pointer] > referenceValue[pointer]) {
+          if (sourceValue[pointer]! > referenceValue[pointer]!) {
             result = false;
-          } else if (sourceValue[pointer] < referenceValue[pointer]) {
+          } else if (sourceValue[pointer]! < referenceValue[pointer]!) {
             result = true;
-          } else if (sourceValue[pointer] === referenceValue[pointer]) {
+          } else if (sourceValue[pointer]! === referenceValue[pointer]!) {
             pointer += 1;
           }
         }
@@ -65,10 +65,10 @@ export class CrossUp extends BaseIndicator {
     this.generator.next();
 
     this.result = [];
-    this.sourceSeries.forEach((value, index) => {
+    this.sourceSeries.forEach((_value, index) => {
       var result = this.generator.next({
-        sourceValue: this.sourceSeries[index],
-        referenceValue: this.referenceSeries[index],
+        sourceValue: this.sourceSeries[index]!,
+        referenceValue: this.referenceSeries[index]!,
       });
 
       if (result.value !== undefined) {
@@ -79,14 +79,14 @@ export class CrossUp extends BaseIndicator {
 
   static calculate = crossUp;
 
-  static reverseInputs(input: CrossUpInput): void {
+  static override reverseInputs(input: CrossUpInput): void {
     if (input.reversedInput) {
       input.sourceSeries ? input.sourceSeries.reverse() : undefined;
       input.referenceSeries ? input.referenceSeries.reverse() : undefined;
     }
   }
 
-  nextValue(next: CrossUpNext): boolean {
+  nextValue(next: CrossUpNext): boolean | undefined {
     return this.generator.next(next).value;
   }
 }
