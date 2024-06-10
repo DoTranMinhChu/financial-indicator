@@ -1,12 +1,11 @@
 {
   "name": "financial-indicator",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "",
   "scripts": {
     "rmdir": "node -e \"var fs = require('fs');process.argv.slice(1).map((fpath)=>{ try {fs.rmdirSync(fpath,{recursive: true})} catch(e){console.warn('Error folder:', fpath, e)}});process.exit(0);\"",
-    "prebuild": "xcopy /E /Y src dist\\",
-    "build": "webpack",
-    "test": "mocha --require ts-node/register ./test/**/*.spec.ts"
+    "build": "npm run rmdir -- dist  && tsc && tsc -p tsconfig.esm.json",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,15 +28,8 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.13.0",
-    "assert": "^2.1.0",
-    "@types/chai": "^4.3.16",
-    "@types/mocha": "^10.0.6",
-    "chai": "^5.1.1",
-    "mocha": "^10.4.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.4.5"
   }
 }

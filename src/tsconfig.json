@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true,
+        "target": "es2017",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "outDir": "./dist",
+        "rootDir": ".",
+        "moduleResolution": "node",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "resolveJsonModule": true,
+        "esModuleInterop": true
+    },
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "dist",
+        "node_modules",
+        "./dist/**/*"
+    ]
+}
