@@ -13,7 +13,7 @@ gulpfile.js
 tsconfig.json
 tslint.json
 .vscode
-
+node_modules
 # unneeded html
 index.html
 
