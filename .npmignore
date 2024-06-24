@@ -20,6 +20,6 @@ index.html
 
 # test
 test
-
+./dist/test
 #editors
 .editorconfig

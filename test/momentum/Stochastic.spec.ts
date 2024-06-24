@@ -1,7 +1,7 @@
 import assert from "assert";
 
 import { data } from "../data";
-import { Stochastic } from "../../src/momentum";
+import { Stochastic, StochasticOutput } from "../../src/momentum";
 let period = 14;
 let signalPeriod = 3;
 let expectResult = [
@@ -60,7 +60,7 @@ describe("Stochastic", function () {
     myInput.low = [];
     myInput.close = [];
     let stochastic = new Stochastic(myInput);
-    let results = [];
+    let results: Array<StochasticOutput> = [];
     input.high.forEach((price, index) => {
       const result = stochastic.nextValue({
         high: input.high[index]!,

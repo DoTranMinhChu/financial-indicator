@@ -28,7 +28,7 @@ describe("ATR (Average True Range)", function () {
 
   it("should be able to get ATR for the next bar using nextValue", function () {
     var atr = new ATR({ period: period, high: [], low: [], close: [] });
-    var results = [];
+    var results: Array<number> = [];
     input.close.forEach(function (close, index) {
       var result = atr.nextValue({
         close: input.close[index],

@@ -1,5 +1,5 @@
 import assert from "assert";
-import { StochasticRSI } from "../../src/momentum";
+import { StochasticRSI, StochasticRSIOutput } from "../../src/momentum";
 
 let expectResult = [
   { sk: undefined, sd: undefined, stochasticRSI: 0 },
@@ -197,7 +197,7 @@ describe("StochasticRSI", function () {
 
   it("should be able to get StochasticRSI for the next bar using nextValue", function () {
     let stochastic = new StochasticRSI({ ...input, values: [] });
-    let results = [];
+    let results: Array<StochasticRSIOutput> = [];
     input.values.forEach((price, index) => {
       const result = stochastic.nextValue(price);
       if (result) results.push(result);

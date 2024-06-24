@@ -5,6 +5,7 @@
         "declaration": true,
         "target": "es2019",
         "module": "commonjs",
+        "noImplicitAny": true,
         "outDir": "./dist",
         "rootDir": ".",
         "moduleResolution": "node",
@@ -12,12 +13,14 @@
             "node_modules/@types"
         ],
         "resolveJsonModule": true,
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "include": [
-        "test/**/*.ts"
+        "."
     ],
     "exclude": [
-        "node_modules"
+        "dist",
+        "node_modules",
+        "./dist/**/*"
     ]
 }
