@@ -50,7 +50,7 @@ describe("Cross Down", function () {
         sourceValue: input.sourceSeries[index],
         referenceValue: input.referenceSeries[index],
       });
-      results.push(result);
+      results.push(result!);
     });
     assert.deepEqual(
       results,

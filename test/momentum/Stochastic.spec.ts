@@ -1,7 +1,7 @@
 import assert from "assert";
 
 import { data } from "../data";
-import { Stochastic, StochasticOutput } from "../../src/momentum";
+import { Stochastic, StochasticOutput } from "../../src";
 let period = 14;
 let signalPeriod = 3;
 let expectResult = [

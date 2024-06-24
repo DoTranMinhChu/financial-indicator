@@ -1,5 +1,5 @@
 import assert from "assert";
-import { StochasticRSI, StochasticRSIOutput } from "../../src/momentum";
+import { StochasticRSI, StochasticRSIOutput } from "../../src";
 
 let expectResult = [
   { sk: undefined, sd: undefined, stochasticRSI: 0 },

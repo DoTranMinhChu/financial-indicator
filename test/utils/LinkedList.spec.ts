@@ -101,7 +101,6 @@ describe("LinkedList", () => {
 
   // Test cases for unshiftCurrent method
   it("should unshift current item to the beginning", () => {
-
     list.push(1);
     list.push(2);
     list.push(3);

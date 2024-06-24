@@ -7,7 +7,7 @@
         "module": "commonjs",
         "noImplicitAny": true,
         "outDir": "./dist",
-        "rootDir": ".",
+        "rootDir": "./src",
         "moduleResolution": "node",
         "typeRoots": [
             "node_modules/@types"
@@ -16,10 +16,10 @@
         "esModuleInterop": true
     },
     "include": [
-        "."
+        "src/**/*.ts"
     ],
     "exclude": [
-        "dist",
+        "./dist",
         "node_modules",
         "./dist/**/*"
     ]
