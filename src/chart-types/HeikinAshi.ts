@@ -83,12 +83,12 @@ export class HeikinAshi extends BaseIndicator {
     this.generator.next();
     input.low.forEach((_tick, index) => {
       var result = this.generator.next({
-        open: input.open[index]!,
-        high: input.high[index]!,
-        low: input.low[index]!,
-        close: input.close[index]!,
-        volume: input.volume[index]!,
-        timestamp: input.timestamp[index]!,
+        open: input.open?.[index]!,
+        high: input.high?.[index]!,
+        low: input.low?.[index]!,
+        close: input.close?.[index]!,
+        volume: input.volume?.[index]!,
+        timestamp: input.timestamp?.[index]!,
       });
       if (result.value) {
         this.result.open.push(result.value.open);

@@ -12,10 +12,18 @@ export class ADXInput extends BaseIndicatorInput {
   adxPeriod!: number;
   diPeriod!: number;
 }
-
+export class ADXOutput {
+  adx?: number | undefined;
+  pdi?: number | undefined;
+  mdi?: number | undefined;
+}
 export class ADX extends BaseIndicator {
-  override result: number[];
-  generator: Generator<number | undefined, number | undefined, CandleData>;
+  override result: ADXOutput[];
+  generator: Generator<
+    ADXOutput | undefined,
+    ADXOutput | undefined,
+    CandleData
+  >;
   constructor(input: ADXInput) {
     super(input);
     const lows = input.low;
@@ -55,8 +63,8 @@ export class ADX extends BaseIndicator {
     this.result = [];
 
     this.generator = (function* (): Generator<
-      number | undefined,
-      number | undefined,
+      ADXOutput | undefined,
+      ADXOutput | undefined,
       CandleData
     > {
       let tick = yield;
@@ -65,6 +73,7 @@ export class ADX extends BaseIndicator {
         let calcTr = tr.nextValue(tick);
         let calcPDI = plusDI.nextValue(tick);
         let calcMDI = minusDI.nextValue(tick);
+        let calcSmoothedDX: number = undefined;
         if (calcTr === undefined) {
           tick = yield;
           continue;
@@ -77,14 +86,10 @@ export class ADX extends BaseIndicator {
 
           const smoothedDX = emaDX.nextValue(lastDX);
           if (smoothedDX !== undefined) {
-            const adx = smoothedDX;
-            tick = yield adx;
-          } else {
-            tick = yield;
+            calcSmoothedDX = smoothedDX;
           }
-        } else {
-          tick = yield;
         }
+        tick = yield { adx: calcSmoothedDX, pdi: calcPDI, mdi: calcMDI };
       }
     })();
 
@@ -98,21 +103,19 @@ export class ADX extends BaseIndicator {
       });
 
       if (result.value !== undefined) {
-        this.result.push(format(result.value));
+        this.result.push(result.value);
       }
     });
   }
 
   static calculate = adx;
 
-  nextValue(price: CandleData): number | undefined {
-    const result = this.generator.next(price).value;
-    if (result != undefined) return this.format(result);
-    return undefined;
+  nextValue(price: CandleData): ADXOutput | undefined {
+    return this.generator.next(price).value;
   }
 }
 
-export function adx(input: ADXInput): number[] {
+export function adx(input: ADXInput): ADXOutput[] {
   BaseIndicator.reverseInputs(input);
   const result = new ADX(input).result;
   if (input.reversedInput) {
