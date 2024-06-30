@@ -13,9 +13,9 @@ export class ADXInput extends BaseIndicatorInput {
   diPeriod!: number;
 }
 export class ADXOutput {
-  adx?: number | undefined;
   pdi?: number | undefined;
   mdi?: number | undefined;
+  adx?: number | undefined;
 }
 export class ADX extends BaseIndicator {
   override result: ADXOutput[];
@@ -89,7 +89,7 @@ export class ADX extends BaseIndicator {
             calcSmoothedDX = smoothedDX;
           }
         }
-        tick = yield { adx: calcSmoothedDX, pdi: calcPDI, mdi: calcMDI };
+        tick = yield { pdi: calcPDI, mdi: calcMDI, adx: calcSmoothedDX };
       }
     })();
 

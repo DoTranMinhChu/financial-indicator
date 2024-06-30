@@ -1,5 +1,5 @@
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
-import { EMA } from "../moving-averages";
+import { EMA, SMA } from "../moving-averages";
 import { RSI } from "../oscillators";
 import FixedSizeLinkedList from "../utils/FixedSizeLinkedList";
 
@@ -9,6 +9,7 @@ export class StochasticRsiInput extends BaseIndicatorInput {
   stochasticPeriod!: number;
   kPeriod!: number;
   dPeriod!: number;
+  typeMAOscillator: "SMA" | "EMA" = "EMA";
 }
 
 export class StochasticRSIOutput {
@@ -50,15 +51,15 @@ export class StochasticRSI extends BaseIndicator {
         false,
         true
       );
-
-      let kSma = new EMA({
+      const oscillatorMAtype = input.typeMAOscillator == "SMA" ? SMA : EMA;
+      let kSma = new oscillatorMAtype({
         period: kPeriod,
         values: [],
         format: (v) => {
           return v;
         },
       });
-      let dSma = new EMA({
+      let dSma = new oscillatorMAtype({
         period: dPeriod,
         values: [],
         format: (v) => {
