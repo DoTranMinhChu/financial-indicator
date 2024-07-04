@@ -1,8 +1,8 @@
 import assert from "assert";
 import { data } from "../data";
-import { MACD, MACDOutput } from "../../src";
+import { MACD, MACDInput, MACDOutput } from "../../src";
 
-const macdInput = {
+const macdInput :MACDInput= {
   values: [
     68.8, 67.9, 67.8, 68, 68.4, 67.8, 67.3, 67.7, 67.7, 67.7, 67.6, 67, 67.3,
     66.7, 68.2, 67.9, 67, 67, 66.8, 66.6, 66.7, 64.9, 64, 64.2, 64.2, 64, 63.5,
@@ -13,8 +13,8 @@ const macdInput = {
   fastPeriod: 12,
   slowPeriod: 26,
   signalPeriod: 9,
-  simpleMAOscillator: true,
-  simpleMASignal: true,
+  typeMAOscillator: "SMA",
+  typeMASignal: "SMA",
 };
 const expectedOutput = [
   {
@@ -205,14 +205,7 @@ const expectedOutput = [
 ];
 
 describe("MACD (Moving Average Convergence Divergence)", function () {
-  let input: {
-    values: number[];
-    fastPeriod: number;
-    slowPeriod: number;
-    signalPeriod: number;
-    simpleMAOscillator: boolean;
-    simpleMASignal: boolean;
-  };
+  let input: MACDInput;
   beforeEach(function () {
     input = JSON.parse(JSON.stringify(macdInput));
   });
