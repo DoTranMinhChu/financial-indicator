@@ -1,6 +1,7 @@
 import assert from "assert";
 import { EMA } from "../../src";
 import { data } from "../data";
+import { NumberFormat } from "../../src/utils/NumberFormatter";
 
 const prices = data.close;
 const period = 9;
@@ -68,6 +69,22 @@ describe("EMA (Exponential Moving Average)", function () {
       const result = emaProducer.nextValue(price);
       if (result) results.push(result);
     });
+    assert.deepEqual(
+      results,
+      expectedEMAOutput,
+      "Wrong Results while getting results"
+    );
+  });
+
+  it("should be able to get EMA for the next bar using nextValue", function () {
+    const results = EMA.calculate({
+      period: 4,
+      values: [10, 12, 14, 13, 15, 17, 16, 18, 19, 20],
+      format: NumberFormat(2),
+    });
+ 
+    const expectedEMAOutput = [12.25, 13.35, 14.81, 15.29, 16.37, 17.42, 18.45];
+
     assert.deepEqual(
       results,
       expectedEMAOutput,

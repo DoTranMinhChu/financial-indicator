@@ -1,11 +1,11 @@
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 
-export class AvgLossInput extends BaseIndicatorInput {
+export class AvgLossInput extends BaseIndicatorInput<number> {
   values: number[] = [];
   period!: number;
 }
 
-export class AverageLoss extends BaseIndicator {
+export class AverageLoss extends BaseIndicator<number> {
   generator: Generator<number | undefined, number | undefined, number>;
   constructor(input: AvgLossInput) {
     super(input);

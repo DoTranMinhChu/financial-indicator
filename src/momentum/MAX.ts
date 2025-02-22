@@ -5,7 +5,7 @@ import { CCI, RSI } from "../oscillators";
 import { CandleData } from "../StockData";
 import FixedSizeLinkedList from "../utils/FixedSizeLinkedList";
 
-export class MAXInput extends BaseIndicatorInput {
+export class MAXInput extends BaseIndicatorInput<number> {
   high: number[] = [];
   low: number[] = [];
   close: number[] = [];
@@ -21,7 +21,7 @@ export class MAXOutput {
   sd!: number;
 }
 
-export class MAX extends BaseIndicator {
+export class MAX extends BaseIndicator<number> {
   override result: MAXOutput[];
 
   generator: Generator<
@@ -111,7 +111,7 @@ export class MAX extends BaseIndicator {
         low: [],
         close: [],
         period: maxPeriod,
-        format: (v) => {
+        format: (v: any) => {
           return v;
         },
       });

@@ -5,7 +5,7 @@ import { MDI } from "./MDI";
 import { PDI } from "./PDI";
 import { TrueRange } from "./TrueRange";
 
-export class ADXInput extends BaseIndicatorInput {
+export class ADXInput extends BaseIndicatorInput<number> {
   high: number[] = [];
   low: number[] = [];
   close: number[] = [];
@@ -17,7 +17,7 @@ export class ADXOutput {
   mdi?: number | undefined;
   adx?: number | undefined;
 }
-export class ADX extends BaseIndicator {
+export class ADX extends BaseIndicator<number> {
   override result: ADXOutput[];
   generator: Generator<
     ADXOutput | undefined,

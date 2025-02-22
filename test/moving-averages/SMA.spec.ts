@@ -1,6 +1,7 @@
 import assert from "assert";
 import { SMA } from "../../src";
 import { data } from "../data";
+import { NumberFormat } from "../../src/utils/NumberFormatter";
 
 const prices = data.close;
 
@@ -74,16 +75,30 @@ describe("SMA (Simple Moving Average)", function () {
     );
   });
 
-  it("should be able to get SMA for low values(issue 1)", function () {
-    let expectedResult = [0.002, 0.00275, 0.0025, 0.003, 0.003, 0.0025];
+  it("should be able to get SMA for the next bar using updateCurrentValue", function () {
+    const smaProducer = new SMA({ period: 4, values: [] });
+
+    [2, 6, 12, 24, 100, 52, 64].forEach((price) => {
+      smaProducer.nextValue(price);
+    });
+    smaProducer.updateBar(4, 46);
+
+    const results: Array<number> = smaProducer.getResult();
     assert.deepEqual(
-      SMA.calculate({
-        period: 4,
-        values: [0.001, 0.003, 0.001, 0.003, 0.004, 0.002, 0.003, 0.003, 0.002],
-      }),
-      expectedResult,
-      "Wrong Results"
+      results,
+      [11, 22, 33.5, 46.5],
+      "Wrong Results while getting results"
     );
+  });
+
+  it("should be able to get SMA for low values(issue 1)", function () {
+    let expectedResult = [0.002, 0.003, 0.003, 0.003, 0.003, 0.003];
+    const results = SMA.calculate({
+      period: 4,
+      values: [0.001, 0.003, 0.001, 0.003, 0.004, 0.002, 0.003, 0.003, 0.002],
+      format: NumberFormat(3),
+    });;
+    assert.deepEqual(results, expectedResult, "Wrong Results");
   });
 
   it("Passing format function should format the results appropriately", function () {
@@ -92,9 +107,7 @@ describe("SMA (Simple Moving Average)", function () {
       SMA.calculate({
         period: 4,
         values: [0.001, 0.003, 0.001, 0.003, 0.004, 0.002, 0.003, 0.003, 0.002],
-        format: (val) => {
-          return +val.toPrecision(1);
-        },
+        format: NumberFormat(3),
       }),
       expectedResult,
       "Wrong Results"

@@ -2,12 +2,12 @@ import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { AverageGain } from "../utils/AverageGain";
 import { AverageLoss } from "../utils/AverageLoss";
 
-export class RSIInput extends BaseIndicatorInput {
+export class RSIInput extends BaseIndicatorInput<number>  {
   period!: number;
   values: number[] = [];
 }
 
-export class RSI extends BaseIndicator {
+export class RSI extends BaseIndicator<number>  {
   generator: Generator<number | undefined, number | undefined, number>;
 
   constructor(input: RSIInput) {

@@ -4,14 +4,14 @@ import { WilderSmoothing } from "../moving-averages";
 import { MDM, MDMNext } from "./MDM";
 import { TrueRange } from "./TrueRange";
 
-export class MDIInput extends BaseIndicatorInput {
+export class MDIInput extends BaseIndicatorInput<number> {
   high: number[] = [];
   low: number[] = [];
   close: number[] = [];
   period!: number;
 }
 
-export class MDI extends BaseIndicator {
+export class MDI extends BaseIndicator<number>  {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: MDIInput) {

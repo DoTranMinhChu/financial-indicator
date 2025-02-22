@@ -1,6 +1,6 @@
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
-export class PDMInput extends BaseIndicatorInput {
+export class PDMInput extends BaseIndicatorInput<number> {
   low: number[] = [];
   high: number[] = [];
 }
@@ -8,7 +8,7 @@ export class PDMNext {
   high!: number;
   low!: number;
 }
-export class PDM extends BaseIndicator {
+export class PDM extends BaseIndicator<number>  {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, PDMNext>;
   constructor(input: PDMInput) {

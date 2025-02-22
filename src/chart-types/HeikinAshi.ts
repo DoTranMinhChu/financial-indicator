@@ -1,7 +1,7 @@
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { CandleList, CandleData } from "../StockData";
 
-export class HeikinAshiInput extends BaseIndicatorInput {
+export class HeikinAshiInput extends BaseIndicatorInput<number>  {
   low?: number[];
   open?: number[];
   volume?: number[];
@@ -10,7 +10,7 @@ export class HeikinAshiInput extends BaseIndicatorInput {
   timestamp?: number[];
 }
 
-export class HeikinAshi extends BaseIndicator {
+export class HeikinAshi extends BaseIndicator<number>  {
   result: CandleList;
   generator: Generator<CandleData, CandleData, CandleData>;
   constructor(input: HeikinAshiInput) {

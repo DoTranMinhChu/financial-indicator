@@ -1,13 +1,13 @@
 import { BaseIndicator } from "../base-indicator";
-import { MAInput } from "./SMA";
+import { SMAInput } from "./SMA";
 
 //STEP3. Add class based syntax with export
-export class WilderSmoothing extends BaseIndicator {
+export class WilderSmoothing extends BaseIndicator<number> {
   period: number;
   price: number[];
   override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
-  constructor(input: MAInput) {
+  constructor(input: SMAInput) {
     super(input);
     this.period = input.period;
     this.price = input.values;
@@ -55,7 +55,7 @@ export class WilderSmoothing extends BaseIndicator {
   }
 }
 
-export function wildersmoothing(input: MAInput): number[] {
+export function wildersmoothing(input: SMAInput): number[] {
   BaseIndicator.reverseInputs(input);
   var result = new WilderSmoothing(input).result;
   if (input.reversedInput) {

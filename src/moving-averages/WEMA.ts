@@ -1,12 +1,12 @@
 import { BaseIndicator } from "../base-indicator";
-import { MAInput, SMA } from "./SMA";
+import { SMAInput, SMA } from "./SMA";
 
-export class WEMA extends BaseIndicator {
+export class WEMA extends BaseIndicator<number> {
   period!: number;
   price: number[] = [];
   override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
-  constructor(input: MAInput) {
+  constructor(input: SMAInput) {
     super(input);
     const period = input.period;
     const priceArray = input.values;
@@ -58,7 +58,7 @@ export class WEMA extends BaseIndicator {
   }
 }
 
-export function wema(input: MAInput): number[] {
+export function wema(input: SMAInput): number[] {
   BaseIndicator.reverseInputs(input);
   const result = new WEMA(input).result;
   if (input.reversedInput) {

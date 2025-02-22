@@ -4,14 +4,14 @@ import { WilderSmoothing } from "../moving-averages";
 import { PDM, PDMNext } from "./PDM";
 import { TrueRange } from "./TrueRange";
 
-export class PDIInput extends BaseIndicatorInput {
+export class PDIInput extends BaseIndicatorInput<number> {
   high: number[] = [];
   low: number[] = [];
   close: number[] = [];
   period!: number;
 }
 
-export class PDI extends BaseIndicator {
+export class PDI extends BaseIndicator<number> {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: PDIInput) {

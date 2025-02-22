@@ -1,13 +1,13 @@
 import { BaseIndicator } from "../base-indicator";
 import { LinkedList } from "../utils/LinkedList";
-import { MAInput } from "./SMA";
+import { SMAInput } from "./SMA";
 
-export class WMA extends BaseIndicator {
+export class WMA extends BaseIndicator<number> {
   period!: number;
   price!: number[];
   override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
-  constructor(input: MAInput) {
+  constructor(input: SMAInput) {
     super(input);
     const period = input.period;
     const priceArray = input.values;
@@ -56,7 +56,7 @@ export class WMA extends BaseIndicator {
   }
 }
 
-export function wma(input: MAInput): number[] {
+export function wma(input: SMAInput): number[] {
   BaseIndicator.reverseInputs(input);
   const result = new WMA(input).result;
   if (input.reversedInput) {

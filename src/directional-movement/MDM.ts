@@ -1,6 +1,6 @@
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
-export class MDMInput extends BaseIndicatorInput {
+export class MDMInput extends BaseIndicatorInput<number>  {
   low: number[] = [];
   high: number[] = [];
 }
@@ -9,7 +9,7 @@ export class MDMNext {
   high!: number;
   low!: number;
 }
-export class MDM extends BaseIndicator {
+export class MDM extends BaseIndicator<number>  {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, MDMNext>;
   constructor(input: MDMInput) {

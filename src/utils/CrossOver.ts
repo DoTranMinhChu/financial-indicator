@@ -2,7 +2,7 @@ import { CrossUp } from "./CrossUp";
 import { CrossDown } from "./CrossDown";
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 
-export class CrossOverInput extends BaseIndicatorInput {
+export class CrossOverInput extends BaseIndicatorInput<number> {
   constructor(public sourceSeries: number[], public referenceSeries: number[]) {
     super();
   }
@@ -11,7 +11,7 @@ export class CrossOverNext {
   sourceValue!: number;
   referenceValue!: number;
 }
-export class CrossOver extends BaseIndicator {
+export class CrossOver extends BaseIndicator<number> {
   generator: Generator<boolean | undefined, boolean | undefined, CrossOverNext>;
   override result: boolean[];
 

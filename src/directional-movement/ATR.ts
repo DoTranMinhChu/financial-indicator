@@ -3,14 +3,14 @@ import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { WEMA } from "../moving-averages";
 import { TrueRange } from "./TrueRange";
 
-export class ATRInput extends BaseIndicatorInput {
+export class ATRInput extends BaseIndicatorInput<number> {
   low: number[] = [];
   high: number[] = [];
   close: number[] = [];
   period!: number;
 }
 
-export class ATR extends BaseIndicator {
+export class ATR extends BaseIndicator<number> {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: ATRInput) {

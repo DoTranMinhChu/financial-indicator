@@ -3,7 +3,7 @@ import { EMA, SMA } from "../moving-averages";
 import { RSI } from "../oscillators";
 import FixedSizeLinkedList from "../utils/FixedSizeLinkedList";
 
-export class StochasticRsiInput extends BaseIndicatorInput {
+export class StochasticRsiInput extends BaseIndicatorInput<number> {
   values!: number[];
   rsiPeriod!: number;
   stochasticPeriod!: number;
@@ -18,7 +18,7 @@ export class StochasticRSIOutput {
   sd!: number;
 }
 
-export class StochasticRSI extends BaseIndicator {
+export class StochasticRSI extends BaseIndicator<number> {
   override result: StochasticRSIOutput[];
 
   generator: Generator<

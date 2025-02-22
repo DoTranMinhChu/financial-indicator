@@ -2,7 +2,7 @@ import { SMA } from "./SMA";
 import { EMA } from "./EMA";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
-export class MACDInput extends BaseIndicatorInput {
+export class MACDInput extends BaseIndicatorInput<number> {
   typeMAOscillator: "SMA" | "EMA" = "EMA";
   typeMASignal: "SMA" | "EMA" = "EMA";
   fastPeriod!: number;
@@ -19,7 +19,7 @@ export class MACDOutput {
   histogram?: number | undefined;
 }
 
-export class MACD extends BaseIndicator {
+export class MACD extends BaseIndicator<number> {
   override result: MACDOutput[];
   generator: Generator<MACDOutput | undefined, MACDOutput | undefined, number>;
   constructor(input: MACDInput) {

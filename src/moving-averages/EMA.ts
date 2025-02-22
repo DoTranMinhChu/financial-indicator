@@ -1,69 +1,76 @@
 import { BaseIndicator } from "../base-indicator";
-import { MAInput, SMA } from "./SMA";
+import { DynamicIndicatorAbstract } from "../base-indicator/dynamic-indicator.abstract";
+import { SMAInput, SMA } from "./SMA";
 
-export class EMA extends BaseIndicator {
+export class EMA extends DynamicIndicatorAbstract<number, number> {
   period!: number;
-  price: number[] = [];
+  values: number[] = [];
+
   override result: number[];
   generator: Generator<number | undefined, number | undefined, number>;
-  constructor(input: MAInput) {
+  constructor(input: SMAInput) {
     super(input);
-    const period = input.period;
-    const priceArray = input.values;
-    const exponent = 2 / (period + 1);
-    let sma: SMA;
+    this.period = input.period;
+  }
+  protected createGenerator(): Generator<
+    number | undefined,
+    number | undefined,
+    number
+  > {
+    const period = this.period;
+    const alpha = 2 / (period + 1);
 
-    this.result = [];
+    // Ta dùng tạm một mảng hoặc một SMA để gom đủ 'period' bar đầu tiên
+    let buffer: number[] = [];
+    let prevEma: number | undefined = undefined;
 
-    sma = new SMA({ period: period, values: [] });
-
-    const genFn = function* (): Generator<
-      number | undefined,
-      number | undefined,
-      number
-    > {
-      let tick = yield;
-      let prevEma: number | undefined = undefined;
+    return (function* () {
+      let tick = yield; // Lấy bar đầu tiên
       while (true) {
-        if (prevEma !== undefined && tick !== undefined) {
-          prevEma = (tick - prevEma) * exponent + prevEma;
+        if (tick !== undefined) {
+          buffer.push(tick);
+        }
+
+        // Khi buffer chưa đủ 'period' bar => chưa tính EMA, yield undefined
+        if (buffer.length < period) {
+          tick = yield undefined;
+          continue;
+        }
+
+        // Nếu prevEma còn undefined, ta khởi tạo bằng SMA của 'period' bar đầu
+        if (prevEma === undefined) {
+          const sum = buffer.reduce((acc, val) => acc + val, 0);
+          prevEma = sum / period;
+          // yield EMA đầu tiên = SMA
           tick = yield prevEma;
         } else {
-          tick = yield;
-          prevEma = sma.nextValue(tick);
-          if (prevEma) tick = yield prevEma;
+          // Áp dụng công thức EMA
+          if (tick !== undefined && prevEma !== undefined) {
+            prevEma = prevEma + alpha * (tick - prevEma);
+            tick = yield prevEma;
+          } else {
+            tick = yield undefined;
+          }
         }
       }
-    };
-
-    this.generator = genFn();
-
-    this.generator.next();
-    this.generator.next();
-
-    priceArray.forEach((tick) => {
-      const result = this.generator.next(tick);
-      if (result.value != undefined) {
-        this.result.push(this.format(result.value));
-      }
-    });
+    })();
   }
 
-  static calculate = ema;
-
-  nextValue(price: number): number | undefined {
+  public nextValue(price: number): number | undefined {
     const result = this.generator.next(price).value;
+    this.values.push(price);
     if (result != undefined) return this.format(result);
     return undefined;
   }
-}
 
-export function ema(input: MAInput): number[] {
-  BaseIndicator.reverseInputs(input);
-  const result = new EMA(input).result;
-  if (input.reversedInput) {
-    result.reverse();
+  static calculate(input: SMAInput): number[] {
+    BaseIndicator.reverseInputs(input);
+    const emaInstance = new EMA(input);
+    const result = emaInstance.result;
+    if (input.reversedInput) {
+      result.reverse();
+    }
+    BaseIndicator.reverseInputs(input);
+    return result;
   }
-  BaseIndicator.reverseInputs(input);
-  return result;
 }

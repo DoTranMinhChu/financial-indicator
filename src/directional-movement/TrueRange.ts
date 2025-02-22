@@ -1,13 +1,13 @@
 import { CandleData } from "../StockData";
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
 
-export class TrueRangeInput extends BaseIndicatorInput {
+export class TrueRangeInput extends BaseIndicatorInput<number>  {
   low: number[] = [];
   high: number[] = [];
   close: number[] = [];
 }
 
-export class TrueRange extends BaseIndicator {
+export class TrueRange extends BaseIndicator<number> {
   override result: number[];
   generator: Generator<number | undefined, number | undefined, CandleData>;
   constructor(input: TrueRangeInput) {

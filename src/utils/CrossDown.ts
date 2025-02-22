@@ -1,6 +1,6 @@
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 
-export class CrossDownInput extends BaseIndicatorInput {
+export class CrossDownInput extends BaseIndicatorInput<number> {
   constructor(public sourceSeries: number[], public referenceSeries: number[]) {
     super();
   }
@@ -10,7 +10,7 @@ export class CrossDownNext {
   referenceValue!: number;
 }
 
-export class CrossDown extends BaseIndicator {
+export class CrossDown extends BaseIndicator<number> {
   sourceSeries: number[];
   referenceSeries: number[];
   override result: boolean[];

@@ -3,14 +3,14 @@ import { SMA } from "../moving-averages";
 import { CandleData } from "../StockData";
 import FixedSizeLinkedList from "../utils/FixedSizeLinkedList";
 
-export class CCIInput extends BaseIndicatorInput {
+export class CCIInput extends BaseIndicatorInput<number> {
   high: number[];
   low: number[];
   close: number[];
   period: number;
 }
 
-export class CCI extends BaseIndicator {
+export class CCI extends BaseIndicator<number> {
   result: number[];
   generator: Generator<number, number, CandleData>;
   constructor(input: CCIInput) {

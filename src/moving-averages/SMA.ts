@@ -1,28 +1,36 @@
-//STEP 1. Import Necessary indicator or rather last step
-
 import { BaseIndicator, BaseIndicatorInput } from "../base-indicator";
+import { DynamicIndicatorAbstract } from "../base-indicator/dynamic-indicator.abstract";
 import { LinkedList } from "../utils/LinkedList";
 
-//STEP 2. Create the input for the indicator, mandatory should be in the constructor
-export class MAInput extends BaseIndicatorInput {
+// Input cho chỉ báo SMA
+export class SMAInput extends BaseIndicatorInput<number> {
   constructor(public period: number, public values: number[]) {
     super();
   }
 }
 
-//STEP3. Add class based syntax with export
-export class SMA extends BaseIndicator {
+// SMA trả về kết quả dạng number (trung bình đơn giản)
+export class SMA extends DynamicIndicatorAbstract<number, number> {
   period: number;
-  price: number[];
-  override result: number[];
-  generator: Generator<number | undefined, number | undefined, number>;
-  constructor(input: MAInput) {
+
+  constructor(input: SMAInput) {
     super(input);
     this.period = input.period;
-    this.price = input.values;
-    const genFn = function* (
-      period: number
-    ): Generator<number | undefined, number | undefined, number> {
+  }
+
+  // Tạo mới generator cho tính SMA
+  protected createGenerator(): Generator<
+    number | undefined,
+    number | undefined,
+    number
+  > {
+    const period = this.period;
+
+    return (function* (): Generator<
+      number | undefined,
+      number | undefined,
+      number
+    > {
       const list = new LinkedList();
       let sum = 0;
       let counter = 1;
@@ -41,35 +49,24 @@ export class SMA extends BaseIndicator {
         }
         current = yield result;
       }
-    };
-    this.generator = genFn(this.period);
-    this.generator.next();
-    this.result = [];
-    this.price.forEach((tick) => {
-      let result = this.generator.next(tick);
-      if (result.value !== undefined) {
-        this.result.push(this.format(result.value));
-      }
-    });
+    })();
   }
 
-  static calculate = sma;
-
-  nextValue(price: number): number | undefined {
+  public nextValue(price: number): number | undefined {
     const result = this.generator.next(price).value;
+    this.values.push(price);
     if (result != undefined) return this.format(result);
     return undefined;
   }
-}
 
-export function sma(input: MAInput): number[] {
-  BaseIndicator.reverseInputs(input);
-  const result = new SMA(input).result;
-  if (input.reversedInput) {
-    result.reverse();
+  static calculate(input: SMAInput): number[] {
+    BaseIndicator.reverseInputs(input);
+    const smaInstance = new SMA(input);
+    const result = smaInstance.result;
+    if (input.reversedInput) {
+      result.reverse();
+    }
+    BaseIndicator.reverseInputs(input);
+    return result;
   }
-  BaseIndicator.reverseInputs(input);
-  return result;
 }
-
-//STEP 6. Run the tests

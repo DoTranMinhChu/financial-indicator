@@ -2,14 +2,14 @@ import { CandleData } from "../StockData";
 import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { SMA } from "../moving-averages";
 
-export class AwesomeOscillatorInput extends BaseIndicatorInput {
+export class AwesomeOscillatorInput extends BaseIndicatorInput<number> {
   high: number[] = [];
   low: number[] = [];
   fastPeriod!: number;
   slowPeriod!: number;
 }
 
-export class AwesomeOscillator extends BaseIndicator {
+export class AwesomeOscillator extends BaseIndicator<number> {
   generator: Generator<any, any, any>;
   constructor(input: AwesomeOscillatorInput) {
     super(input);

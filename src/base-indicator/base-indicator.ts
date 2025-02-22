@@ -1,8 +1,8 @@
 import { NumberFormat } from "../utils/NumberFormatter";
 
-export class BaseIndicatorInput {
+export class BaseIndicatorInput<TOutput> {
   reversedInput?: boolean;
-  format?: (data: number) => any;
+  format?: (data: TOutput) => any;
 }
 
 export interface IAllInputs {
@@ -15,11 +15,11 @@ export interface IAllInputs {
   timestamp?: number[];
 }
 
-export class BaseIndicator {
+export class BaseIndicator<TOutput> {
   result: any;
-  format: (data: number) => number;
-  constructor(input: BaseIndicatorInput) {
-    this.format = input.format || NumberFormat;
+  format: (data: TOutput) => TOutput;
+  constructor(input: BaseIndicatorInput<TOutput>) {
+    this.format = input.format || NumberFormat(1);
   }
   static reverseInputs(input: any): void {
     if (input.reversedInput) {

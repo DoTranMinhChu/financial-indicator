@@ -3,7 +3,7 @@ import { BaseIndicatorInput, BaseIndicator } from "../base-indicator";
 import { EMA } from "../moving-averages";
 import FixedSizeLinkedList from "../utils/FixedSizeLinkedList";
 
-export class StochasticInput extends BaseIndicatorInput {
+export class StochasticInput extends BaseIndicatorInput<number> {
   period!: number;
   low!: number[];
   high!: number[];
@@ -16,7 +16,7 @@ export class StochasticOutput {
   d!: number | undefined;
 }
 
-export class Stochastic extends BaseIndicator {
+export class Stochastic extends BaseIndicator<number> {
   override result: StochasticOutput[];
   generator: Generator<
     StochasticOutput | undefined,
